@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:android_todo_flutter_cloudflare_supabase/domain/models/auth_user.dart';
@@ -14,16 +15,22 @@ class StubAuthRepo implements IAuthRepository {
   Stream<AuthUser?> get authStateChanges => const Stream.empty();
 
   @override
-  AuthUser? get currentUser => const AuthUser(id: 'u1', email: 'tester@example.com');
+  AuthUser? get currentUser =>
+      const AuthUser(id: 'u1', email: 'tester@example.com');
 
   @override
-  Future<void> signInWithGoogle({required String redirectTo}) async {}
+  Future<void> signInWithGoogle() async {}
+  @override
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  }) async {}
 
   @override
-  Future<void> signInWithPassword({required String email, required String password}) async {}
-
-  @override
-  Future<void> signUpWithPassword({required String email, required String password}) async {}
+  Future<void> signUpWithPassword({
+    required String email,
+    required String password,
+  }) async {}
 
   @override
   Future<void> signOut() async {}
@@ -47,7 +54,8 @@ class StubTaskRepo implements ITaskRepository {
   Future<Task> createTask(String title) async => stored.first;
 
   @override
-  Future<Task> updateTask(String id, {String? title, bool? completed}) async => stored.first;
+  Future<Task> updateTask(String id, {String? title, bool? completed}) async =>
+      stored.first;
 
   @override
   Future<void> deleteTask(String id) async {}
@@ -58,30 +66,33 @@ class StubTaskRepo implements ITaskRepository {
 
 void main() {
   group('HomeScreen Widget Tests', () {
-    testWidgets('should render Header, Task Input, Segmented control, and Task items', (tester) async {
-      final authRepo = StubAuthRepo();
-      final taskRepo = StubTaskRepo();
+    testWidgets(
+      'should render Header, Task Input, Segmented control, and Task items',
+      (tester) async {
+        final authRepo = StubAuthRepo();
+        final taskRepo = StubTaskRepo();
 
-      final authCtrl = AuthController(authRepository: authRepo);
-      final taskCtrl = TaskController(taskRepository: taskRepo);
+        final authCtrl = AuthController(authRepository: authRepo);
+        final taskCtrl = TaskController(taskRepository: taskRepo);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: HomeScreen(
-            authController: authCtrl,
-            taskController: taskCtrl,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: HomeScreen(
+              authController: authCtrl,
+              taskController: taskCtrl,
+            ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpAndSettle();
+        await tester.pumpAndSettle();
 
-      expect(find.text('My Tasks'), findsOneWidget);
-      expect(find.text('First Home Task'), findsOneWidget);
-      expect(find.text('Add a new task...'), findsOneWidget);
-      expect(find.text('All'), findsOneWidget);
-      expect(find.text('Active'), findsOneWidget);
-      expect(find.text('Completed'), findsOneWidget);
-    });
+        expect(find.text('My Tasks'), findsOneWidget);
+        expect(find.text('First Home Task'), findsOneWidget);
+        expect(find.text('Add a new task...'), findsOneWidget);
+        expect(find.text('All'), findsOneWidget);
+        expect(find.text('Active'), findsOneWidget);
+        expect(find.text('Completed'), findsOneWidget);
+      },
+    );
   });
 }

@@ -8,6 +8,11 @@ abstract final class AppConfig {
   static const String supabaseAnonKey =
       'sb_publishable_Ex8-tdeMvLECQwOXmfBqmw_sxUGKLx9';
 
+  /// Google OAuth Web Client ID.
+  /// Used by native Android Google Sign-In.
+  static const String googleWebClientId =
+      '923963730456-msd5raa4982ubkiuiikjtoeo4grvo60p.apps.googleusercontent.com';
+
   /// Custom Deep Link scheme and host for Google OAuth redirect on Android.
   static const String googleRedirectUrl =
       'io.supabase.fluttertodo://login-callback';

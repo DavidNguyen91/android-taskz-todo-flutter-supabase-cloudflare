@@ -8,8 +8,8 @@ abstract interface class IAuthRepository {
   /// Gets the currently authenticated user, or null if none.
   AuthUser? get currentUser;
 
-  /// Initiates Google OAuth Sign-In via Deep Link.
-  Future<void> signInWithGoogle({required String redirectTo});
+  /// Signs in with Google using native Android authentication.
+  Future<void> signInWithGoogle();
 
   /// Signs in with Email and Password.
   Future<void> signInWithPassword({

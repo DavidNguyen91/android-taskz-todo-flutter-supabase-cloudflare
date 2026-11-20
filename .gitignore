@@ -60,4 +60,4 @@ android/key.properties
 
 # Google services configuration
 google-services.json
-EOF
+/android/build/

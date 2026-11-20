@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'core/config/app_config.dart';
 import 'core/theme/app_theme.dart';
 import 'data/repositories/supabase_auth_repository.dart';
@@ -20,6 +22,11 @@ Future<void> main() async {
     anonKey: AppConfig.supabaseAnonKey,
   );
 
+  // Initialize native Google Sign-In.
+  await GoogleSignIn.instance.initialize(
+    serverClientId: AppConfig.googleWebClientId,
+  );
+
   final client = Supabase.instance.client;
 
   // Dependency Inversion: Construct concrete repositories conforming to interfaces
@@ -30,10 +37,9 @@ Future<void> main() async {
   final authController = AuthController(authRepository: authRepository);
   final taskController = TaskController(taskRepository: taskRepository);
 
-  runApp(TodoApp(
-    authController: authController,
-    taskController: taskController,
-  ));
+  runApp(
+    TodoApp(authController: authController, taskController: taskController),
+  );
 }
 
 /// Root Application Widget with Apple iOS aesthetic themes.
@@ -60,9 +66,7 @@ class TodoApp extends StatelessWidget {
         builder: (context, _) {
           if (authController.isLoading) {
             return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
+              body: Center(child: CircularProgressIndicator.adaptive()),
             );
           }
 
@@ -73,9 +77,7 @@ class TodoApp extends StatelessWidget {
             );
           }
 
-          return LoginScreen(
-            authController: authController,
-          );
+          return LoginScreen(authController: authController);
         },
       ),
     );

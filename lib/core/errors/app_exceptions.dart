@@ -25,6 +25,14 @@ class UnauthorizedException extends AppException {
   ]);
 }
 
+/// Thrown when the user intentionally cancels an authentication flow.
+class AuthCancelledException extends AppException {
+  const AuthCancelledException([
+    super.message = 'Authentication was cancelled.',
+    super.cause,
+  ]);
+}
+
 /// Thrown when input data fails client or server validation rules.
 class ValidationException extends AppException {
   const ValidationException(super.message, [super.cause]);

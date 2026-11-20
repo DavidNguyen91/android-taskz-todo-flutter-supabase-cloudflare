@@ -1,4 +1,4 @@
-package com.example.android_todo_flutter_cloudflare_supabase
+package com.taskz_todo
 
 import io.flutter.embedding.android.FlutterActivity
 

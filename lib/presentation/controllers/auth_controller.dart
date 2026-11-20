@@ -1,6 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import '../../core/config/app_config.dart';
+
 import '../../core/errors/app_exceptions.dart';
 import '../../domain/models/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -41,12 +42,17 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await authRepository.signInWithGoogle(
-        redirectTo: AppConfig.googleRedirectUrl,
-      );
+      await authRepository.signInWithGoogle();
+
       _isLoading = false;
       notifyListeners();
       return true;
+    } on AuthCancelledException {
+      // User intentionally cancelled Google Sign-In.
+      _errorMessage = null;
+      _isLoading = false;
+      notifyListeners();
+      return false;
     } on AppException catch (e) {
       _errorMessage = e.message;
       _isLoading = false;
@@ -69,10 +75,7 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await authRepository.signInWithPassword(
-        email: email,
-        password: password,
-      );
+      await authRepository.signInWithPassword(email: email, password: password);
       _isLoading = false;
       notifyListeners();
       return true;
@@ -98,10 +101,7 @@ class AuthController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await authRepository.signUpWithPassword(
-        email: email,
-        password: password,
-      );
+      await authRepository.signUpWithPassword(email: email, password: password);
       _isLoading = false;
       notifyListeners();
       return true;

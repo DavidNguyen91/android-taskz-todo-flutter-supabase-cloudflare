@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthUser;
+
 import '../../core/config/app_config.dart';
 import '../../core/errors/app_exceptions.dart';
 import '../../domain/models/auth_user.dart';
@@ -29,12 +32,35 @@ class SupabaseAuthRepository implements IAuthRepository {
   }
 
   @override
-  Future<void> signInWithGoogle({required String redirectTo}) async {
+  Future<void> signInWithGoogle() async {
     await _guard(() async {
-      await client.auth.signInWithOAuth(
-        OAuthProvider.google,
-        redirectTo: redirectTo,
-      );
+      // Step 1: Authenticate with Google using native Android UI.
+      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      // Step 2: Obtain the Google ID Token.
+      final idToken = googleUser.authentication.idToken;
+
+      if (idToken == null) {
+        throw const ServerException(
+          'Google did not return an ID token. Please try again.',
+        );
+      }
+
+      // Step 3: Obtain Google authorization for the email scope.
+      const scopes = ['email'];
+
+      final authorization =
+          await googleUser.authorizationClient.authorizationForScopes(scopes) ??
+          await googleUser.authorizationClient.authorizeScopes(scopes);
+
+      // Step 4: Exchange Google credentials for a Supabase session.
+      await client.auth
+          .signInWithIdToken(
+            provider: OAuthProvider.google,
+            idToken: idToken,
+            accessToken: authorization.accessToken,
+          )
+          .timeout(AppConfig.requestTimeout);
     });
   }
 
@@ -53,10 +79,7 @@ class SupabaseAuthRepository implements IAuthRepository {
 
     await _guard(() async {
       await client.auth
-          .signInWithPassword(
-            email: trimmedEmail,
-            password: password,
-          )
+          .signInWithPassword(email: trimmedEmail, password: password)
           .timeout(AppConfig.requestTimeout);
     });
   }
@@ -76,10 +99,7 @@ class SupabaseAuthRepository implements IAuthRepository {
 
     await _guard(() async {
       await client.auth
-          .signUp(
-            email: trimmedEmail,
-            password: password,
-          )
+          .signUp(email: trimmedEmail, password: password)
           .timeout(AppConfig.requestTimeout);
     });
   }
@@ -98,6 +118,12 @@ class SupabaseAuthRepository implements IAuthRepository {
       throw NetworkException('No internet connection.', e);
     } on TimeoutException catch (e) {
       throw NetworkException('Request timed out. Please try again.', e);
+    } on GoogleSignInException catch (e) {
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        throw AuthCancelledException('Authentication was cancelled.', e);
+      }
+
+      throw ServerException('Google Sign-In failed. Please try again.', e);
     } on AuthException catch (e) {
       throw UnauthorizedException(e.message, e);
     } on AppException {

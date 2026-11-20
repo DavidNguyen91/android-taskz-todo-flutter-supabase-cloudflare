@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:android_todo_flutter_cloudflare_supabase/core/errors/app_exceptions.dart';
 import 'package:android_todo_flutter_cloudflare_supabase/domain/models/auth_user.dart';
@@ -17,21 +18,27 @@ class FakeAuthRepository implements IAuthRepository {
   AuthUser? get currentUser => user;
 
   @override
-  Future<void> signInWithGoogle({required String redirectTo}) async {
+  Future<void> signInWithGoogle() async {
     if (shouldThrow) throw const NetworkException('OAuth error');
     user = const AuthUser(id: 'google-user-1', email: 'user@google.com');
     _controller.add(user);
   }
 
   @override
-  Future<void> signInWithPassword({required String email, required String password}) async {
+  Future<void> signInWithPassword({
+    required String email,
+    required String password,
+  }) async {
     if (shouldThrow) throw const UnauthorizedException('Invalid credentials');
     user = AuthUser(id: 'email-user-1', email: email);
     _controller.add(user);
   }
 
   @override
-  Future<void> signUpWithPassword({required String email, required String password}) async {
+  Future<void> signUpWithPassword({
+    required String email,
+    required String password,
+  }) async {
     if (shouldThrow) throw const ServerException('Signup failed');
     user = AuthUser(id: 'new-user-1', email: email);
     _controller.add(user);
