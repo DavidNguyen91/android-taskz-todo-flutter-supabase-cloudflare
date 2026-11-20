@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,10 +23,16 @@ Future<void> main() async {
     anonKey: AppConfig.supabaseAnonKey,
   );
 
-  // Initialize native Google Sign-In.
-  await GoogleSignIn.instance.initialize(
-    serverClientId: AppConfig.googleWebClientId,
-  );
+  // Initialize Google Sign-In with platform-specific configuration.
+  if (kIsWeb) {
+    await GoogleSignIn.instance.initialize(
+      clientId: AppConfig.googleWebClientId,
+    );
+  } else {
+    await GoogleSignIn.instance.initialize(
+      serverClientId: AppConfig.googleWebClientId,
+    );
+  }
 
   final client = Supabase.instance.client;
 

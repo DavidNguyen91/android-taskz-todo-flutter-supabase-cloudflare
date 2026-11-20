@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthUser;
 
@@ -34,10 +35,19 @@ class SupabaseAuthRepository implements IAuthRepository {
   @override
   Future<void> signInWithGoogle() async {
     await _guard(() async {
-      // Step 1: Authenticate with Google using native Android UI.
+      // Web: Use Supabase OAuth redirect flow.
+      if (kIsWeb) {
+        await client.auth
+            .signInWithOAuth(OAuthProvider.google, redirectTo: Uri.base.origin)
+            .timeout(AppConfig.requestTimeout);
+
+        return;
+      }
+
+      // Android: Keep native Google Sign-In.
       final googleUser = await GoogleSignIn.instance.authenticate();
 
-      // Step 2: Obtain the Google ID Token.
+      // Obtain Google ID Token.
       final idToken = googleUser.authentication.idToken;
 
       if (idToken == null) {
@@ -46,14 +56,14 @@ class SupabaseAuthRepository implements IAuthRepository {
         );
       }
 
-      // Step 3: Obtain Google authorization for the email scope.
+      // Obtain Google authorization for the email scope.
       const scopes = ['email'];
 
       final authorization =
           await googleUser.authorizationClient.authorizationForScopes(scopes) ??
           await googleUser.authorizationClient.authorizeScopes(scopes);
 
-      // Step 4: Exchange Google credentials for a Supabase session.
+      // Exchange Google credentials for a Supabase session.
       await client.auth
           .signInWithIdToken(
             provider: OAuthProvider.google,
