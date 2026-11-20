@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../core/localization/app_strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../controllers/auth_controller.dart';
@@ -56,9 +57,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-    final borderSubtle = isDark ? AppColors.darkBorderSubtle : AppColors.lightBorderSubtle;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
+    final borderSubtle = isDark
+        ? AppColors.darkBorderSubtle
+        : AppColors.lightBorderSubtle;
     final accentColor = isDark ? AppColors.darkAccent : AppColors.lightAccent;
     final hoverColor = isDark ? AppColors.darkHover : AppColors.lightHover;
 
@@ -72,7 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
             return Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 420),
                   child: Column(
@@ -82,10 +92,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Brand Pill
                       Center(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: hoverColor,
-                            borderRadius: BorderRadius.circular(AppGeometry.radiusFull),
+                            borderRadius: BorderRadius.circular(
+                              AppGeometry.radiusFull,
+                            ),
                             border: Border.all(color: borderSubtle),
                           ),
                           child: Text(
@@ -103,7 +118,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Title & Subtitle
                       Text(
-                        _isSignUpMode ? widget.strings.signUpTitle : widget.strings.signInTitle,
+                        _isSignUpMode
+                            ? widget.strings.signUpTitle
+                            : widget.strings.signInTitle,
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
@@ -114,7 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _isSignUpMode ? widget.strings.signUpSubtitle : widget.strings.signInSubtitle,
+                        _isSignUpMode
+                            ? widget.strings.signUpSubtitle
+                            : widget.strings.signInSubtitle,
                         style: TextStyle(
                           fontSize: 15,
                           color: textSecondary,
@@ -137,11 +156,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           color: cardColor,
-                          borderRadius: BorderRadius.circular(AppGeometry.radiusCard),
+                          borderRadius: BorderRadius.circular(
+                            AppGeometry.radiusCard,
+                          ),
                           border: Border.all(color: borderSubtle),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),
+                              color: Colors.black.withValues(
+                                alpha: isDark ? 0.3 : 0.04,
+                              ),
                               blurRadius: 16,
                               offset: const Offset(0, 4),
                             ),
@@ -156,22 +179,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               label: widget.strings.continueWithGoogle,
                               child: CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                onPressed: isLoading ? null : widget.authController.signInWithGoogle,
+                                onPressed: isLoading
+                                    ? null
+                                    : widget.authController.signInWithGoogle,
                                 child: Container(
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: isDark ? AppColors.darkHover : AppColors.lightHover,
-                                    borderRadius: BorderRadius.circular(AppGeometry.radiusMd),
+                                    color: isDark
+                                        ? AppColors.darkHover
+                                        : AppColors.lightHover,
+                                    borderRadius: BorderRadius.circular(
+                                      AppGeometry.radiusMd,
+                                    ),
                                     border: Border.all(color: borderSubtle),
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       // Google 'G' Symbol representation
-                                      const Icon(
-                                        CupertinoIcons.globe,
-                                        size: 20,
-                                        color: AppColors.lightAccent,
+                                      Image.asset(
+                                        'assets/images/google_icon_colored.png',
+                                        width: 20,
+                                        height: 20,
+                                        fit: BoxFit.contain,
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
@@ -194,7 +224,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Expanded(child: Divider(color: borderSubtle)),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
                                   child: Text(
                                     widget.strings.orContinueWithEmail,
                                     style: TextStyle(
@@ -222,10 +254,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _emailController,
                               placeholder: widget.strings.emailPlaceholder,
                               keyboardType: TextInputType.emailAddress,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
-                                color: isDark ? AppColors.darkHover : AppColors.lightHover,
-                                borderRadius: BorderRadius.circular(AppGeometry.radiusSm),
+                                color: isDark
+                                    ? AppColors.darkHover
+                                    : AppColors.lightHover,
+                                borderRadius: BorderRadius.circular(
+                                  AppGeometry.radiusSm,
+                                ),
                                 border: Border.all(color: borderSubtle),
                               ),
                               style: TextStyle(color: textPrimary),
@@ -246,10 +285,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _passwordController,
                               placeholder: widget.strings.passwordPlaceholder,
                               obscureText: true,
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
-                                color: isDark ? AppColors.darkHover : AppColors.lightHover,
-                                borderRadius: BorderRadius.circular(AppGeometry.radiusSm),
+                                color: isDark
+                                    ? AppColors.darkHover
+                                    : AppColors.lightHover,
+                                borderRadius: BorderRadius.circular(
+                                  AppGeometry.radiusSm,
+                                ),
                                 border: Border.all(color: borderSubtle),
                               ),
                               style: TextStyle(color: textPrimary),
@@ -260,7 +306,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             // Submit Button
                             Semantics(
                               button: true,
-                              label: _isSignUpMode ? widget.strings.signUpButton : widget.strings.signInButton,
+                              label: _isSignUpMode
+                                  ? widget.strings.signUpButton
+                                  : widget.strings.signInButton,
                               child: CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: isLoading ? null : _submitEmailAuth,
@@ -269,10 +317,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                     color: accentColor,
-                                    borderRadius: BorderRadius.circular(AppGeometry.radiusMd),
+                                    borderRadius: BorderRadius.circular(
+                                      AppGeometry.radiusMd,
+                                    ),
                                   ),
                                   child: isLoading
-                                      ? const CupertinoActivityIndicator(color: Colors.white)
+                                      ? const CupertinoActivityIndicator(
+                                          color: Colors.white,
+                                        )
                                       : Text(
                                           _isSignUpMode
                                               ? widget.strings.signUpButton
@@ -300,7 +352,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         },
                         child: Text(
-                          _isSignUpMode ? widget.strings.switchToSignIn : widget.strings.switchToSignUp,
+                          _isSignUpMode
+                              ? widget.strings.switchToSignIn
+                              : widget.strings.switchToSignUp,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
